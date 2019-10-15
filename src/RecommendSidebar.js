@@ -1,11 +1,12 @@
 import React from 'react';
 import './App.css';
 import Card from 'react-bootstrap/Card';
+import PreviousCourseArea from './PreviousCourseArea';
 
 class RecommendSidebar extends React.Component {
   constructor(props) {
     super(props);
-    this.prevCourses = [];
+    this.prevCourses = {};
     this.state = {};
   }
 
@@ -18,9 +19,7 @@ class RecommendSidebar extends React.Component {
     let coursesTaken = [];
     for(const course of Object.entries(courses)) {
         for (const prevName of Object.values(previousCourseNames.data)){
-            console.log(prevName);
             if(course[0] === prevName){
-                console.log("here");
                 coursesTaken.push(course);
             }
         }
@@ -28,12 +27,17 @@ class RecommendSidebar extends React.Component {
     return coursesTaken;
   }
 
-//  componentDidUpdate() {
-//   }
+  displayCourses(){
+    console.log("in display sidebar");
+    return(
+        <div>
+            <PreviousCourseArea data={this.state.previousCourses}/>
+        </div>
+    );
+
+  }
 
   render() {
-    console.log("courses ");
-    console.log(this.props.courses);
     console.log("prev course names ");
     console.log(this.props.previousCourseNames);
     this.prevCourses = this.filterPreviousCourses(this.props.courses, this.props.previousCourseNames);
