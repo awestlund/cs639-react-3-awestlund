@@ -1,58 +1,42 @@
-import React from 'react';
-import './App.css';
-import Card from 'react-bootstrap/Card';
-import PreviousCourseArea from './PreviousCourseArea';
+import React from "react";
+import "./App.css";
+import Course from "./Course";
+// import PreviousCourseArea from './PreviousCourseArea';
 
 class RecommendSidebar extends React.Component {
   constructor(props) {
     super(props);
-    this.prevCourses = {};
-    this.state = {};
+    this.state = {
+      previousCourseNames: {}
+    };
   }
 
-  setPreviousCourses = () => {
-    console.log(this.props.setPreviousCourses);
-    this.props.setPreviousCourses(this.prevCourses);
-  }
+  componentDidMount = () => {
+    fetch(
+      "https://mysqlcs639.cs.wisc.edu/students/5022025924/classes/completed"
+    )
+      .then(res => res.json())
+      .then(data => this.setState({ previousCourseNames: data }));
+  };
 
-  filterPreviousCourses(courses, previousCourseNames) {
-    let coursesTaken = [];
-    for(const course of Object.entries(courses)) {
-        for (const prevName of Object.values(previousCourseNames.data)){
-            if(course[0] === prevName){
-                coursesTaken.push(course);
-            }
+  getCourses = () => {
+    let courses = [];
+
+    for (const course of Object.entries(this.props.courses)) {
+      for (const prevName of Object.values(
+        this.state.previousCourseNames.data
+      )) {
+        if (course[0] === prevName) {
+          courses.push(<Course key={course[0]} data={course[1]} />);
         }
+      }
     }
-    return coursesTaken;
-  }
 
-  displayCourses(){
-    console.log("in display sidebar");
-    return(
-        <div>
-            <PreviousCourseArea data={this.state.previousCourses}/>
-        </div>
-    );
-
-  }
+    return courses;
+  };
 
   render() {
-    console.log("prev course names ");
-    console.log(this.props.previousCourseNames);
-    this.prevCourses = this.filterPreviousCourses(this.props.courses, this.props.previousCourseNames);
-    console.log(this.prevCourses);
-
-    return (
-      <>
-        <Card style={{width: 'calc(20vw - 5px)', marginLeft: '5px', height: 'calc(100vh - 10px)', position: 'fixed'}}>
-          <Card.Body>
-            <Card.Title>Rate Your Courses!</Card.Title>
-            <button onClick={this.setPreviousCourses}>get courses</button>
-          </Card.Body>
-        </Card>
-      </>
-    )
+    return <div style={{ margin: "5px" }}>{this.getCourses()}</div>;
   }
 }
 
