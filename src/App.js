@@ -66,7 +66,7 @@ class App extends React.Component {
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossOrigin="anonymous"
         />
-        <Tabs defaultActiveKey="Search" id="tabs-home">
+        <Tabs defaultActiveKey="Recommend" id="tabs-home">
           <Tab eventKey="Search" title="Course Search">
             <Sidebar
               setCourses={courses => this.setCourses(courses)}
@@ -88,7 +88,10 @@ class App extends React.Component {
             </div>
           </Tab>
           <Tab eventKey="Recommend" title="Recommened Courses">
-            <RecommendSidebar courses={this.state.allCourses} />
+            <RecommendSidebar 
+              courses={this.state.allCourses} 
+              subjects={this.state.subjects}
+            />
             {/* <div style={{marginLeft: '20vw'}}>
               <CourseArea data={this.state.previousCourses}/>
             </div> */}
