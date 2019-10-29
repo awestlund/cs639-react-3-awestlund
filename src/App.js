@@ -13,12 +13,13 @@ class App extends React.Component {
     this.state = {
       allCourses: {},
       filteredCourses: {},
-      cartCourses: {},
+      cartCourses: [],
       previousCourses: [],
       previousCourseNames: {},
       recommededCourses: {},
       subjects: []
     };
+
   }
 
   componentDidMount() {
@@ -49,8 +50,12 @@ class App extends React.Component {
     this.setState({ filteredCourses: courses });
   }
 
-  setCartCourses(data) {
-    this.setState({ cartCourses: data });
+  setCartCourses = (data) => {
+    let temp = this.state.cartCourses;
+    if (!temp.includes(data)){
+      temp.push(data);
+      this.setState({ cartCourses: temp });
+    }
   }
 
   // setPreviousCourses(previous) {
@@ -69,32 +74,38 @@ class App extends React.Component {
         <Tabs defaultActiveKey="Recommend" id="tabs-home">
           <Tab eventKey="Search" title="Course Search">
             <Sidebar
-              setCourses={courses => this.setCourses(courses)}
+              setCartCourses={this.setCartCourses}
               courses={this.state.allCourses}
               subjects={this.state.subjects}
             />
             <div style={{ marginLeft: "20vw" }}>
-              <CourseArea data={this.state.filteredCourses} />
+              <CourseArea 
+                data={this.state.filteredCourses} 
+                setCartCourses={this.setCartCourses}
+                where="Search"
+              />
             </div>
           </Tab>
           <Tab eventKey="Cart" title="Cart">
             <Cart
-              setCartCourses={courses => this.setCartCourses(courses)}
+              setCartCourses={this.setCartCourses}
               courses={this.state.allCourses}
               subjects={this.state.subjects}
             />
             <div style={{ marginLeft: "20vw" }}>
-              <CourseArea data={this.state.cartCourses} />
+              <CourseArea 
+                data={this.state.cartCourses}
+                setCartCourses={this.setCartCourses}
+                where={"Cart"}
+              />
             </div>
           </Tab>
           <Tab eventKey="Recommend" title="Recommened Courses">
             <RecommendSidebar 
               courses={this.state.allCourses} 
               subjects={this.state.subjects}
+              setCartCourses={this.setCartCourses}
             />
-            {/* <div style={{marginLeft: '20vw'}}>
-              <CourseArea data={this.state.previousCourses}/>
-            </div> */}
           </Tab>
         </Tabs>
       </>

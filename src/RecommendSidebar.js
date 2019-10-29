@@ -237,7 +237,14 @@ class RecommendSidebar extends React.Component {
     }
 
     if (displayNewCourses){
-      courses = <div style={{ marginLeft: "30vw", paddingLeft: '5px', paddingRight: '5px', height: 'calc(100vh - 10px)'}}><CourseArea data={this.state.coursesDisplay} /></div>
+      this.getDisplayCourses();
+      courses = <div style={{ marginLeft: "30vw", paddingLeft: '5px', paddingRight: '5px', height: 'calc(100vh - 10px)'}}>
+        <CourseArea 
+          data={this.state.coursesDisplay} 
+          setCartCourses={this.props.setCartCourses}
+          where="Recommender"
+          />
+        </div>
     }
     else{
       courses = <div></div>

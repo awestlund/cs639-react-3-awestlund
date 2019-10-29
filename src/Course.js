@@ -5,16 +5,28 @@ import Accordion from 'react-bootstrap/Accordion'
 import Button from 'react-bootstrap/Button'
 
 class Course extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  addCart = () =>{
+    console.log("Add Cart Clicked");
+    this.props.setCartCourses(this.props.data);
+    var nodes = document.getElementById(this.props.data.name+this.props.where).getElementsByClassName('btn btn-outline-primary');
+    for(var i = 0; i < nodes.length; i++){
+        nodes[i].disabled = true;
+    }
+  }
+
   render() {
     return (
       <Accordion>
-        <Card style={{width: '100%', marginTop: '5px', marginBottom: '5px'}}>
+        {this.inCart}
+        <Card id={this.props.data.name+this.props.where} style={{width: '100%', marginTop: '5px', marginBottom: '5px'}}>
           <Card.Header>
             <Accordion.Toggle as={Button} variant="link" eventKey="0" style={{fontWeight:"bold"}}>{this.props.data.name}
-              {/* add to cart fuctionality */}
             </Accordion.Toggle>
-            <Button style={{position: "absolute",right: "5px", padding: "5px", color: "white", backgroundColor: "#007bff"}} variant="outline-primary">Add to Cart</Button>
-            {/* onClick={this.addToCart(this.props.data, "all") */}
+            <Button style={{position: "absolute",right: "5px", padding: "5px", color: "white", backgroundColor: "#007bff"}} variant="outline-primary" onClick={this.addCart}>Add to Cart</Button>
           </Card.Header>
           <Accordion.Collapse eventKey="0">
             <Card.Body className="mb-2 text-muted">
@@ -53,10 +65,8 @@ class Course extends React.Component {
         <Card style={{width: '100%', marginTop: '5px', marginBottom: '5px'}}>
           <Card.Header>
             <Accordion.Toggle as={Button} variant="link" eventKey="0">{section[0]}
-              {/* add to cart fuctionality */}
-              {/* onClick setCartCourses = {data} => this.props.section} */}
             </Accordion.Toggle>
-            <Button style={{position: "absolute",right: "5px", padding: "5px", color: "white", backgroundColor: "#007bff"}} variant="outline-primary">Add to Cart</Button>
+            <Button style={{position: "absolute",right: "5px", padding: "5px", color: "white", backgroundColor: "#007bff"}} variant="outline-primary" onClick={this.addCart}>Add to Cart</Button>
           </Card.Header>
           <Accordion.Collapse eventKey="0">
             <Card.Body className="mb-2 text-muted">
@@ -88,10 +98,8 @@ class Course extends React.Component {
         <Card style={{width: '100%', marginTop: '5px', marginBottom: '5px'}}>
           <Card.Header>
             <Accordion.Toggle as={Button} variant="link" eventKey="0">{subsection[0]}
-              {/* add to cart fuctionality */}
-              {/* onClick setCartCourses = {data} => this.props.data} */}
             </Accordion.Toggle>
-            <Button style={{position: "absolute",right: "5px", padding: "5px", color: "white", backgroundColor: "#007bff"}} variant="outline-primary">Add to Cart</Button>
+            <Button style={{position: "absolute",right: "5px", padding: "5px", color: "white", backgroundColor: "#007bff"}} variant="outline-primary" onClick={this.addCart}>Add to Cart</Button>
           </Card.Header>
           <Accordion.Collapse eventKey="0">
             <Card.Body className="mb-2 text-muted">
