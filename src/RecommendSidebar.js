@@ -130,6 +130,7 @@ class RecommendSidebar extends React.Component {
       for(const key in keywords){
         if (course.keywords.includes(key)){
           filteredCourses.push(course);
+          console.log();
         }
       }
     }
