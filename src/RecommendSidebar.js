@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
 import Card from 'react-bootstrap/Card';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import PreviousCourse from "./PreviousCourse";
 import Button from "react-bootstrap/Button";
@@ -22,7 +24,7 @@ class RecommendSidebar extends React.Component {
     };
     this.handleDoneClick = this.handleDoneClick.bind(this);
     this.handleAgainClick = this.handleAgainClick.bind(this);
-    this.keywords = React.createRef();
+    this.subjects = React.createRef();
   }
 
   componentDidMount = () => {
@@ -38,6 +40,7 @@ class RecommendSidebar extends React.Component {
     this.setState({displayKeywords: true});
     this.setState({displayNewCourses: true});
     this.setState({rateButton: false});
+    // this.getDisplayCourses();
     var nodes = document.getElementById("rateCourses").getElementsByTagName('*');
     for(var i = 0; i < nodes.length; i++){
          nodes[i].disabled = true;
@@ -101,17 +104,101 @@ class RecommendSidebar extends React.Component {
         this.state.coursesDisplay.push(course[1]);
       }
     }
-    console.log(this.state.coursesDisplay);
+    console.log("all other courses" + this.state.coursesDisplay);
     return courses;
   };
 
-  chooseKeyword(){
+  getDisplayCourses(){
+    let filteredCourses = []
+    //this.state.coursesDisplay;
+
+    //find liked key words
+    let likedKeywords = this.getLikedKeywords();
+    //find disliked key words
+    let dislikedKeywords = this.getDislikedKeywords();
+    let keywords = [];
+    //find overall liked keywords
+    for (const i of likedKeywords){
+      if (!dislikedKeywords.includes(i)){
+        keywords.push(i);
+      }
+    }
+    console.log("my keywords: " + keywords);
+    //add the courses with the overall key words to be recommended
+    console.log("Pos display"+ this.state.coursesDisplay);
+    for(const course in Object.values(this.state.coursesDisplay)){
+      for(const key in keywords){
+        if (course.keywords.includes(key)){
+          filteredCourses.push(course);
+        }
+      }
+    }
+
+    // let subs = getLikedSubjects();
+    // for (const course in Object.values(this.state.coursesDisplay)){
+    //   if (subs.includes(course.subject)){
+    //     if(!filteredCourses.includes(course)){
+    //       filteredCourses.push(course);
+    //     }
+    //   }
+    // }
+
+    this.setState({ coursesDisplay: filteredCourses });
+    // return filteredCourses;
+  }
+
+  getLikedKeywords(){
+    let keywords = [];
+    for(const i of Object.values(this.state.likedCourses)){
+      for (const j of i.keywords){
+        if(!keywords.includes(j)){
+          keywords.push(j);
+        }
+      }
+    }
+    return keywords;
+  }
+
+  getDislikedKeywords(){
+    let keywords = [];
+    for(const i of Object.values(this.state.dislikedCourses)){
+      for (const j of i.keywords){
+        if(!keywords.includes(j)){
+          keywords.push(j);
+        }
+      }
+    }
+    return keywords;
+  }
+
+  getLikedSubjects(){
+    let subjects = [];
+    for(const course of Object.values(this.state.likedCourses)){
+      console.log("Subject: " + course.subject);
+      if(!subjects.includes(course.subject)){
+        subjects.push(course.subject);
+      }
+    }
+    console.log("subjects: "+ subjects);
+    return subjects;
+  }
+
+  // getCheckBoxes(){
+  //   <Form.Check
+  //     type="checkbox"
+  //     label="first radio"
+  //     name="formHorizontalRadios"
+  //     id="formHorizontalRadios1"
+  //   />
+  // }
+
+  chooseSubject(){
     return(
       <Form>
         <Form.Group style={{marginTop: "10px"}} controlId="formSubject">
           <Form.Label>Select Interesting Subjects</Form.Label>
-          <Form.Control as="select" ref={this.keywords} onChange={() => this.setCourses()}>
-            {this.getKeywordOptions()}
+          <Form.Control as="select" ref={this.subjects} onChange={() => this.getDisplayCourses()} multiple>
+            {this.getLikedSubjects()}
           </Form.Control>
         </Form.Group>
       </Form>
@@ -128,7 +215,21 @@ class RecommendSidebar extends React.Component {
     let clearbutton;
 
     if (displayKeywords){
-      select = <div style={{ margin: "5px" }}>{this.chooseKeyword()}</div>
+      select = <div style={{ margin: "5px" }}>{this.chooseSubject()}</div>
+      // <Form.Group as={Row} style={{ marginTop: "10px" }}>
+      //           <Form.Label as="legend" column sm={2}>
+      //             Filters
+      //           </Form.Label>
+      //           <Col sm={10}>
+      //             <Form.Check
+      //               type="checkbox"
+      //               label="first radio"
+      //               name="formHorizontalRadios"
+      //               id="formHorizontalRadios1"
+      //             />
+      //           </Col>
+      //         </Form.Group>
+      // <div style={{ margin: "5px" }}>{this.chooseKeyword()}</div>
     }
     else{
       select = <div></div>
@@ -142,7 +243,7 @@ class RecommendSidebar extends React.Component {
     }
 
     if(rateButton){
-      mybutton = <Button style={{marginTop: '5px'}} onClick={this.handleDoneClick}>Done Rating</Button>
+      mybutton = <Button style={{marginTop: '5px'}} onClick={this.getDisplayCourses, this.handleDoneClick}>Done Rating</Button>
       clearbutton = <Button variant="outline-danger" style={{marginLeft: '5px', marginTop: '5px'}} onClick={this.handleAgainClick} >Clear Selection</Button>
     }
     else{

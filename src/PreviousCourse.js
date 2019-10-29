@@ -9,8 +9,8 @@ class PreviousCourse extends React.Component {
   thumbsUpClick = () =>{
     console.log("Thumbs Up Clicked");
     this.props.setLikedCourses(this.props.data);
-    document.getElementById(this.props.data.name).style.border = "thick solid green";
-    document.getElementById(this.props.data.name).style.backgroundColor = "#b8f5ce";
+    // document.getElementById(this.props.data.name).style.border = "thick solid green";
+    // document.getElementById(this.props.data.name).style.backgroundColor = "#b8f5ce";
     document.getElementById(this.props.data.name + "up").disabled = "true";
     document.getElementById(this.props.data.name + "down").disabled = "true";
   }
@@ -19,8 +19,8 @@ class PreviousCourse extends React.Component {
     console.log("Thumbs Down Clicked");
     console.log("key " + this.props.data.name);
     this.props.setDislikedCourses(this.props.data);
-    document.getElementById(this.props.data.name).style.border = "thick solid red";
-    document.getElementById(this.props.data.name).style.backgroundColor = "#ffc4c4";
+    // document.getElementById(this.props.data.name).style.border = "thick solid red";
+    // document.getElementById(this.props.data.name).style.backgroundColor = "#ffc4c4";
     document.getElementById(this.props.data.name + "up").disabled = "true";
     document.getElementById(this.props.data.name + "down").disabled = "true";
   }
