@@ -112,8 +112,30 @@ class RecommendSidebar extends React.Component {
   };
 
   getDisplayCourses(){
-    let filteredCourses = []
-    //this.state.coursesDisplay;
+    let filteredCourses = [];
+
+    if(this.subject.current !== null){
+      let sub = this.subject.current.value;
+      console.log("sub is "+ sub);
+      for (const course of Object.values(this.state.coursesDisplay)){
+        if (sub === course.subject){
+          console.log("course subject: "+ course.subject);
+          if(!filteredCourses.includes(course)){
+            filteredCourses.push(course);
+          }
+        }
+      }
+    }
+
+    let subs = this.getLikedSubjects();
+    for (const course of Object.values(this.state.coursesDisplay)){
+      if (subs.includes(course.subject)){
+        console.log("course subject: "+ course.subject);
+        if(!filteredCourses.includes(course)){
+          filteredCourses.push(course);
+        }
+      }
+    }
 
     //find liked key words
     let likedKeywords = this.getLikedKeywords();
@@ -139,17 +161,6 @@ class RecommendSidebar extends React.Component {
               filteredCourses.push(course);
             }
             break;
-          }
-        }
-      }
-    }
-    if (this.subject.current.value !== null){
-      let sub = this.subject.current.value;
-      for (const course in Object.values(this.state.coursesDisplay)){
-        if (sub === course.subject){
-          console.log("course subject: "+ course.subject);
-          if(!filteredCourses.includes(course)){
-            filteredCourses.push(course);
           }
         }
       }
@@ -212,7 +223,7 @@ class RecommendSidebar extends React.Component {
     return(
       <Form>
         <Form.Group style={{marginTop: "10px"}} controlId="formSubject">
-          <Form.Label>Select Interesting Subjects</Form.Label>
+          <Form.Label>Interest Areas to Further Filter:</Form.Label>
           <Form.Control as="select" ref={this.subject} onChange={() => this.getDisplayCourses()}>
             {this.getLikedSubjects()}
           </Form.Control>
