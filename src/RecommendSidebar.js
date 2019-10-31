@@ -24,7 +24,7 @@ class RecommendSidebar extends React.Component {
     };
     this.handleDoneClick = this.handleDoneClick.bind(this);
     this.handleAgainClick = this.handleAgainClick.bind(this);
-    this.subjects = React.createRef();
+    this.subject = React.createRef();
   }
 
   componentDidMount = () => {
@@ -45,6 +45,7 @@ class RecommendSidebar extends React.Component {
     for(var i = 0; i < nodes.length; i++){
          nodes[i].disabled = true;
     }
+    this.getDisplayCourses();
   }
 
   handleAgainClick(){
@@ -86,6 +87,7 @@ class RecommendSidebar extends React.Component {
 
   getPrevCourses = () => {
     let courses = [];
+    let prevCourses = [];
     for (const course of Object.entries(this.props.courses)) {
       for (const prevName of Object.values(
         this.state.previousCourseNames.data
@@ -104,6 +106,7 @@ class RecommendSidebar extends React.Component {
         this.state.coursesDisplay.push(course[1]);
       }
     }
+    // this.setState({ coursesDisplay: prevCourses});
     console.log("all other courses" + this.state.coursesDisplay);
     return courses;
   };
@@ -126,23 +129,33 @@ class RecommendSidebar extends React.Component {
     console.log("my keywords: " + keywords);
     //add the courses with the overall key words to be recommended
     console.log("Pos display"+ this.state.coursesDisplay);
-    for(const course in Object.values(this.state.coursesDisplay)){
-      for(const key in keywords){
-        if (course.keywords.includes(key)){
-          filteredCourses.push(course);
-          console.log();
+    for(const course of Object.values(this.state.coursesDisplay)){
+      console.log("this: "+ course);
+      for(const key of Object.values(keywords)){
+        for (const keyOfCourse of course.keywords){
+          if (keyOfCourse === key){
+            console.log("here :) " +course.name + key);
+            if (!filteredCourses.includes(course)){
+              filteredCourses.push(course);
+            }
+            break;
+          }
         }
       }
     }
-
-    // let subs = getLikedSubjects();
-    // for (const course in Object.values(this.state.coursesDisplay)){
-    //   if (subs.includes(course.subject)){
-    //     if(!filteredCourses.includes(course)){
-    //       filteredCourses.push(course);
-    //     }
-    //   }
-    // }
+    if (this.subject.current.value !== null){
+      let sub = this.subject.current.value;
+      for (const course in Object.values(this.state.coursesDisplay)){
+        if (sub === course.subject){
+          console.log("course subject: "+ course.subject);
+          if(!filteredCourses.includes(course)){
+            filteredCourses.push(course);
+          }
+        }
+      }
+    }
+  
+    console.log("filtered "+filteredCourses);
 
     this.setState({ coursesDisplay: filteredCourses });
     // return filteredCourses;
@@ -174,10 +187,12 @@ class RecommendSidebar extends React.Component {
 
   getLikedSubjects(){
     let subjects = [];
+    let list=[]
     for(const course of Object.values(this.state.likedCourses)){
       console.log("Subject: " + course.subject);
-      if(!subjects.includes(course.subject)){
-        subjects.push(course.subject);
+      if(!list.includes(course.subject)){
+        list.push(course.subject);
+        subjects.push(<option key={course.subject}>{course.subject}</option>);
       }
     }
     console.log("subjects: "+ subjects);
@@ -198,7 +213,7 @@ class RecommendSidebar extends React.Component {
       <Form>
         <Form.Group style={{marginTop: "10px"}} controlId="formSubject">
           <Form.Label>Select Interesting Subjects</Form.Label>
-          <Form.Control as="select" ref={this.subjects} onChange={() => this.getDisplayCourses()} multiple>
+          <Form.Control as="select" ref={this.subject} onChange={() => this.getDisplayCourses()}>
             {this.getLikedSubjects()}
           </Form.Control>
         </Form.Group>
@@ -217,27 +232,11 @@ class RecommendSidebar extends React.Component {
 
     if (displayKeywords){
       select = <div style={{ margin: "5px" }}>{this.chooseSubject()}</div>
-      // <Form.Group as={Row} style={{ marginTop: "10px" }}>
-      //           <Form.Label as="legend" column sm={2}>
-      //             Filters
-      //           </Form.Label>
-      //           <Col sm={10}>
-      //             <Form.Check
-      //               type="checkbox"
-      //               label="first radio"
-      //               name="formHorizontalRadios"
-      //               id="formHorizontalRadios1"
-      //             />
-      //           </Col>
-      //         </Form.Group>
-      // <div style={{ margin: "5px" }}>{this.chooseKeyword()}</div>
     }
     else{
       select = <div></div>
     }
-
     if (displayNewCourses){
-      this.getDisplayCourses();
       courses = <div style={{ marginLeft: "30vw", paddingLeft: '5px', paddingRight: '5px', height: 'calc(100vh - 10px)'}}>
         <CourseArea 
           data={this.state.coursesDisplay} 
